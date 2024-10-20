@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv  # Importiere load_dotenv
 import openai
-from moviepy.editor import TextClip, CompositeVideoClip
+#from moviepy.editor import TextClip, CompositeVideoClip
 
 # Lade die Umgebungsvariablen aus der .env-Datei
 load_dotenv()
@@ -19,8 +19,9 @@ def generate_quote():
     )
     return response.choices[0].text.strip()
 
+"""
+
 def create_video_with_quote(quote, output_path):
-    """Erstellt ein Video mit dem gegebenen Zitat."""
     
     # Erstelle einen TextClip mit dem Zitat
     text_clip = TextClip(quote, fontsize=70, color='white', size=(720, 480))
@@ -29,6 +30,9 @@ def create_video_with_quote(quote, output_path):
     # Erstelle das Video
     video = CompositeVideoClip([text_clip])
     video.write_videofile(output_path, fps=24)
+
+    
+"""
 
 def main():
     """Hauptfunktion des Programms."""
