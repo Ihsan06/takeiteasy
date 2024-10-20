@@ -1,0 +1,6 @@
+moviepy
+requests
+boto3
+python-dotenv
+tweepy
+openai
