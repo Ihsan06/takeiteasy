@@ -1,11 +1,10 @@
 import os
 import csv
 import time
-import random
 from datetime import datetime
 from dotenv import load_dotenv
 import openai
-from moviepy.editor import TextClip, CompositeVideoClip, ImageClip, AudioFileClip
+from moviepy.editor import TextClip, CompositeVideoClip, ColorClip, AudioFileClip
 import logging
 from colorama import Fore, Style, init
 
@@ -24,9 +23,10 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 # Pfad zur CSV-Datei
 csv_file = 'quotes/quotes_example.csv'
 
-# Verzeichnisse
+# Verzeichnis, in dem die Videos gespeichert werden sollen
 video_directory = 'videos/'
-background_directory = 'background/'
+
+# Verzeichnis, in dem die Audiodatei gespeichert ist
 audio_file_path = 'audio/idea10.mp3'  # Beispielpfad zur Audiodatei
 
 # Überprüfen, ob das Verzeichnis existiert, und erstellen, falls nicht
@@ -68,39 +68,16 @@ def get_quotes_from_csv(csv_file):
     log_with_color(f"\nEs wurden {len(quotes)} Zitate aus der CSV-Datei geladen.\n", Fore.MAGENTA, 1.5)
     return quotes
 
-def get_random_background_image():
-    """Wählt ein zufälliges Bild aus dem Hintergrundverzeichnis aus."""
-    if not os.path.exists(background_directory):
-        log_with_color(f"\nHintergrundverzeichnis {background_directory} nicht gefunden.\n", Fore.RED, 1.5)
-        return None
-    images = [img for img in os.listdir(background_directory) if img.endswith(('png', 'jpg', 'jpeg'))]
-    if not images:
-        log_with_color(f"\nKeine Hintergrundbilder im Verzeichnis {background_directory} gefunden.\n", Fore.RED, 1.5)
-        return None
-    return os.path.join(background_directory, random.choice(images))
-
 def create_video_with_quote(quote, output_path):
     """Erstellt ein Video mit dem angegebenen Zitat und einer Audiodatei."""
     log_with_color(f"\nErstelle Video für Zitat: {quote}\n", Fore.CYAN, 1.5)
     
-    # Zufälliges Hintergrundbild auswählen
-    background_image_path = get_random_background_image()
-    if background_image_path:
-        bg_clip = ImageClip(background_image_path).set_duration(10).resize((720, 480))
-        log_with_color(f"\nHintergrundbild {background_image_path} erfolgreich hinzugefügt.\n", Fore.GREEN, 1.5)
-    else:
-        bg_clip = ColorClip(size=(720, 480), color=(0, 0, 0)).set_duration(10)
+    # Erstelle einen schwarzen Hintergrundclip
+    bg_clip = ColorClip(size=(720, 480), color=(0, 0, 0)).set_duration(10)
 
-    # Textgestaltung
-    text_clip = TextClip(
-        quote,
-        fontsize=60,                # Schriftgröße
-        font='Arial-Bold',           # Schriftart
-        color='white',               # Textfarbe
-        stroke_color='black',        # Randfarbe (für besseren Kontrast)
-        stroke_width=2,              # Randstärke
-        method='caption'             # Automatische Zeilenumbrüche
-    ).set_duration(10).set_position('center')
+    # Erstelle den TextClip
+    text_clip = TextClip(quote, fontsize=70, color='white', size=(720, 480))
+    text_clip = text_clip.set_duration(10).set_position('center')
 
     # Kombiniere den TextClip mit dem HintergrundClip
     video = CompositeVideoClip([bg_clip, text_clip])
@@ -108,6 +85,7 @@ def create_video_with_quote(quote, output_path):
     # Lade die Audiodatei
     if os.path.exists(audio_file_path):
         audio_clip = AudioFileClip(audio_file_path).set_duration(video.duration)
+        # Füge die Audiodatei zum Video hinzu
         video = video.set_audio(audio_clip)
         log_with_color(f"\nAudiodatei {audio_file_path} erfolgreich hinzugefügt.\n", Fore.GREEN, 1.5)
     else:
@@ -126,6 +104,7 @@ def main():
     quotes = get_quotes_from_csv(csv_file)
     if quotes:
         for idx, quote in enumerate(quotes):
+            # Erstelle einen Zeitstempel für den Videonamen
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             output_path = f'{video_directory}/video_{timestamp}_{idx + 1}.mp4'
             create_video_with_quote(quote, output_path)
