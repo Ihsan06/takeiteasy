@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 import openai
-from moviepy.editor import TextClip, CompositeVideoClip, ColorClip, AudioFileClip
+from moviepy.editor import TextClip, CompositeVideoClip, ColorClip, AudioFileClip, ImageClip
 import logging
 from colorama import Fore, Style, init
 
@@ -76,11 +76,14 @@ def create_video_with_quote(quote, output_path):
     bg_clip = ColorClip(size=(720, 480), color=(0, 0, 0)).set_duration(10)
 
     # Erstelle den TextClip
-    text_clip = TextClip(quote, fontsize=70, color='white', size=(720, 480))
+    text_clip = TextClip(quote, fontsize=20, color='black', size=(720, 480))
     text_clip = text_clip.set_duration(10).set_position('center')
 
+    # Erstelle den ImageClip
+    image_clip = ImageClip("background/test1.png").set_duration(10)
+
     # Kombiniere den TextClip mit dem HintergrundClip
-    video = CompositeVideoClip([bg_clip, text_clip])
+    video = CompositeVideoClip([image_clip, text_clip,])
 
     # Lade die Audiodatei
     if os.path.exists(audio_file_path):
