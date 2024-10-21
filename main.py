@@ -147,7 +147,6 @@ def create_video_with_quote(quote, output_path, image_path, image_name):
 
 ########################################       BOX Section      ########################################
 
-
     # Füge eine halbtransparente weiße Box mit abgerundeten Ecken hinzu
     box_height = int(1920 * 0.33)  
     box_width = int(1080 * 0.66)
@@ -161,9 +160,7 @@ def create_video_with_quote(quote, output_path, image_path, image_name):
     # Setze die Box auf 2/3 der Höhe
     box_clip = box_clip.set_position(('center', y_position))
 
-
 ########################################       TEXT Section      ########################################
-
 
     # Erstelle den TextClip und füge Padding hinzu, indem die Größe des Textclips etwas verkleinert wird
     text_padding = 25
@@ -183,7 +180,6 @@ def create_video_with_quote(quote, output_path, image_path, image_name):
     log_with_color(f"\n Video erstellt für Zitat: {quote}\n", Fore.YELLOW, 1.5)
 
 ########################################       AUDIO Section      ########################################
-
 
     # Lade die Audiodatei
     if os.path.exists(audio_file_path):
