@@ -4,21 +4,38 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 import openai
-from moviepy.editor import TextClip, CompositeVideoClip, ColorClip, AudioFileClip, ImageClip
+from moviepy.editor import TextClip, CompositeVideoClip, AudioFileClip, ImageClip
 import logging
 from colorama import Fore, Style, init
 
 # Initialisiere colorama für Windows-Kompatibilität (nicht nötig für Unix-basierte Systeme)
 init(autoreset=True)
 
+
+########################################       LOG Section      ########################################
+
+
 # Initialisiere das Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def log_with_color(message, color=Fore.WHITE, delay=0.5):
+    """Fügt Farben und Verzögerungen zu den Log-Ausgaben hinzu."""
+    print(color + message + Style.RESET_ALL)  # Farbiger Text
+    time.sleep(delay)  # Verzögerung
+
+
+########################################       OPENAI Section      ########################################
+
 
 # Lade die Umgebungsvariablen aus der .env-Datei
 load_dotenv()
 
 # Setze deine OpenAI API-Schlüssel hier
 openai.api_key = os.getenv('OPENAI_API_KEY')
+
+
+########################################       PATH Section      ########################################
+
 
 # Pfad zur CSV-Datei
 csv_file = 'quotes/quotes_example.csv'
@@ -29,15 +46,13 @@ video_directory = 'videos/'
 # Verzeichnis, in dem die Audiodatei gespeichert ist
 audio_file_path = 'audio/idea10.mp3'  # Beispielpfad zur Audiodatei
 
-# Überprüfen, ob das Verzeichnis existiert, und erstellen, falls nicht
-if not os.path.exists(video_directory):
-    os.makedirs(video_directory)
-    log_with_color(f"Verzeichnis {video_directory} wurde erstellt.", Fore.GREEN, 1.0)
 
-def log_with_color(message, color=Fore.WHITE, delay=0.5):
-    """Fügt Farben und Verzögerungen zu den Log-Ausgaben hinzu."""
-    print(color + message + Style.RESET_ALL)  # Farbiger Text
-    time.sleep(delay)  # Verzögerung
+##########################################################################################################
+
+########################################       QUOTE Section      ########################################
+
+##########################################################################################################
+
 
 def generate_quote():
     """Generiert ein inspirierendes Zitat mit der OpenAI API."""
@@ -68,12 +83,17 @@ def get_quotes_from_csv(csv_file):
     log_with_color(f"\nEs wurden {len(quotes)} Zitate aus der CSV-Datei geladen.\n", Fore.MAGENTA, 1.5)
     return quotes
 
+
+##########################################################################################################
+
+########################################       VIDEO Section      ########################################
+
+##########################################################################################################
+
+
 def create_video_with_quote(quote, output_path):
     """Erstellt ein Video mit dem angegebenen Zitat und einer Audiodatei."""
     log_with_color(f"\nErstelle Video für Zitat: {quote}\n", Fore.CYAN, 1.5)
-    
-    # Erstelle einen schwarzen Hintergrundclip
-    bg_clip = ColorClip(size=(720, 480), color=(0, 0, 0)).set_duration(10)
 
     # Erstelle den TextClip
     text_clip = TextClip(quote, fontsize=20, color='black', size=(720, 480))
@@ -97,6 +117,15 @@ def create_video_with_quote(quote, output_path):
     log_with_color(f"\nSchreibe Video zu {output_path} ...\n", Fore.YELLOW, 1.5)
     video.write_videofile(output_path, fps=24)
     log_with_color(f"\nVideo erfolgreich erstellt: {output_path}\n", Fore.GREEN, 1.5)
+
+
+
+##########################################################################################################
+
+########################################       MAIN Section      ########################################
+
+##########################################################################################################    
+
 
 def main():
     """Hauptfunktion des Programms."""
