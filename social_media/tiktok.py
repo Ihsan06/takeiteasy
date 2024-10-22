@@ -1,13 +1,12 @@
 import webbrowser
 import os
 
-# Die OAuth2 URL, um den Benutzer zur TikTok-Berechtigung weiterzuleiten
-client_key = os.getenv("TIKTOK_CLIENT_KEY")
-redirect_uri = "http://localhost:8000/callback"  # Dein Redirect-URI
+client_key = os.getenv("TIKTOK_CLIENT_KEY")  # Dein Client Key
+redirect_uri = "https://ihsan06.github.io/takeiteasy/server/"  # Deine korrekte Redirect URI
 
-auth_url = f"https://www.tiktok.com/auth/authorize/?client_key=awzlrwqeofy44hnl&scope=user.info.basic,video.upload&response_type=code&redirect_uri={redirect_uri}&state=some_random_state"
+auth_url = f"https://www.tiktok.com/auth/authorize/?client_key={client_key}&scope=user.info.basic,video.upload&response_type=code&redirect_uri={redirect_uri}&state=random_state"
 
-# Öffne den Browser, um die Erlaubnis anzufordern
+# Öffne den Browser, um die OAuth-Seite zu öffnen
 webbrowser.open(auth_url)
 
 
