@@ -1,0 +1,27 @@
+stages:
+  - build
+  - post
+
+variables:
+  VIRTUAL_ENV: "venv"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+before_script:
+  - python3 -m venv $VIRTUAL_ENV
+  - source $VIRTUAL_ENV/bin/activate
+  - pip install -r requirements.txt
+
+build_video:
+  stage: build
+  script:
+    - python main.py
+  artifacts:
+    paths:
+      - videos/  
+
+post_to_tiktok:
+  stage: post
+  script:
+    - python tiktok.py
+  dependencies:
+    - build_video
