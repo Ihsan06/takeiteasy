@@ -34,7 +34,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 csv_file = 'quote/quotes_example.csv'
 
 # Verzeichnis, in dem die Videos gespeichert werden sollen
-video_directory = 'videos/'
+video_directory = 'videos/output/'
 
 # Verzeichnis, in dem die Bilder gespeichert sind
 image_directory = 'image/'
